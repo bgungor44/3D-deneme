@@ -348,5 +348,25 @@
         bölümünde görüntülenebilir.
       </div></noscript
     >
+    <script>
+      // Native ES modules and GLB requests need HTTP. Keep file:// visits useful
+      // even when the browser refuses to execute the module entry point.
+      if (location.protocol === "file:") {
+        const loading = document.getElementById("loading");
+        loading.style.flexDirection = "column";
+        loading.style.padding = "24px";
+        loading.style.textAlign = "center";
+        loading.innerHTML =
+          '<p style="max-width:260px;line-height:1.8;margin:0">3D stüdyo için dosya yerine çalışan yerel önizlemeyi aç.</p><a class="primary-link" href="http://127.0.0.1:4173">3D stüdyoyu aç <span>↗</span></a><p style="max-width:260px;font-size:10px;line-height:1.7">Önizleme kapalıysa proje klasöründe <code>node scripts/serve.mjs</code> komutuyla başlatabilirsin.</p>';
+        document
+          .querySelectorAll(
+            ".view-tools button, .product-selector button, .mood-switch button, #detail-toggle",
+          )
+          .forEach((button) => {
+            button.disabled = true;
+          });
+        document.getElementById("drag-hint").hidden = true;
+      }
+    </script>
   </body>
 </html>
