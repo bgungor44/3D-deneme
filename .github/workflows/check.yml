@@ -1,31 +1,13 @@
 name: Validate site
-on: [push, workflow_dispatch]
+on: [push, pull_request]
 permissions:
   contents: read
 jobs:
-  import-source:
-    if: github.ref == 'refs/heads/main'
+  check:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Restore verified source package
-        shell: bash
-        run: |
-          if [ -f ebru-source.zip ]; then
-            echo '7be78d89cd3c1f042a7bdcd50f13ffd7c74e57bdc8a81556ea52aef0d7c5c3b0  ebru-source.zip' | sha256sum -c -
-            unzip -q ebru-source.zip
-            node scripts/check.mjs
-            rm ebru-source.zip
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add .
-            git commit -m 'Restore verified Ebru 3D site sources'
-            git push origin HEAD:main
-          else
-            node scripts/check.mjs
-          fi
+      - run: node scripts/check.mjs
