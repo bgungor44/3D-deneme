@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f1e9" />
+    <meta
+      name="description"
+      content="Ebru — tenine yakın, kendine ait. İç giyim koleksiyonunu üç boyutlu keşfet; renkleri, formları ve en küçük detayları incele."
+    />
+    <title>Ebru — Tenine yakın. Kendine ait.</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three/three.module.min.js",
+          "three/addons/": "./vendor/three/addons/"
+        }
+      }
+    </script>
+    <script type="module" src="js/app.js"></script>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <filter id="marble-flow" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.009 0.014"
+            numOctaves="2"
+            seed="9"
+            result="flow"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="flow"
+            scale="115"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </defs>
+    </svg>
+    <a class="skip-link" href="#main">İçeriğe geç</a>
+    <div class="announcement">
+      BİR HİS, BİR FORM, BİR EBRU. <span>İç giyime yeni bir bakış.</span>
+    </div>
+    <header class="header">
+      <a class="wordmark" href="#" aria-label="Ebru ana sayfa"
+        >ebru<span>®</span></a
+      >
+      <nav aria-label="Ana menü">
+        <a href="#koleksiyon">Koleksiyon</a
+        ><a href="#hikaye">Ebru’nun dünyası</a
+        ><a href="#detaylar">İnce detaylar</a>
+      </nav>
+      <a class="nav-studio" href="#studyo"
+        >3D STÜDYO <span aria-hidden="true">↗</span></a
+      >
+    </header>
+    <main id="main">
+      <section class="hero" id="studyo" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="short-rule"></span> EBRU · FORM KOLEKSİYONU
+          </p>
+          <h1 id="hero-title">Tenine yakın.<br /><em>Kendine ait.</em></h1>
+          <p class="intro">
+            Güzellik, hissettiğin yerde başlar.<br />Her kıvrımı, her dokuyu,
+            her ince detayı<br class="desktop-break" />
+            kendi bakış açından keşfet.
+          </p>
+          <a class="primary-link" href="#koleksiyon"
+            >Koleksiyonu keşfet <span aria-hidden="true">↗</span></a
+          >
+          <div class="hero-footnote">
+            <span class="orbit-icon" aria-hidden="true">◎</span>
+            <p>
+              Bir fotoğraftan fazlası.<br /><strong
+                >Dokun, döndür, yakından tanı.</strong
+              >
+            </p>
+          </div>
+        </div>
+        <div class="studio" data-mood="day">
+          <div class="studio-top">
+            <span class="live-label"><i></i> ETKİLEŞİMLİ 3D DENEYİM</span
+            ><button
+              id="detail-toggle"
+              class="text-button"
+              aria-expanded="false"
+              aria-controls="detail-panel"
+            >
+              Detayları göster <span>＋</span>
+            </button>
+          </div>
+          <div class="studio-type" aria-hidden="true">
+            soft<br /><em>form.</em>
+          </div>
+          <div class="stage" id="stage">
+            <div class="floor-shadow" aria-hidden="true"></div>
+            <div id="canvas-wrap" class="canvas-wrap"></div>
+            <div id="hotspots" class="hotspots" hidden></div>
+            <div id="loading" class="loading" role="status">
+              <span class="loader"></span> Form hazırlanıyor…
+            </div>
+            <div id="fallback" class="fallback" hidden>
+              <img
+                src="assets/sutyen-foto.jpg"
+                alt="Ebru sütyeninin stüdyo fotoğrafı"
+              />
+              <p>
+                3D görünüm şu anda açılamadı. Fotoğraf, ürünün orijinal rengini
+                gösterir.
+              </p>
+              <button class="text-button" id="retry">Tekrar dene ↻</button>
+            </div>
+          </div>
+          <div class="view-tools" aria-label="3D görünüm kontrolleri">
+            <button
+              id="rotate"
+              aria-label="Otomatik döndürmeyi başlat"
+              aria-pressed="false"
+              title="Otomatik döndür"
+            >
+              ↻
+            </button>
+            <span></span
+            ><button id="zoom-in" aria-label="Yakınlaştır" title="Yakınlaştır">
+              ＋</button
+            ><button id="zoom-out" aria-label="Uzaklaştır" title="Uzaklaştır">
+              −</button
+            ><span></span
+            ><button
+              id="reset"
+              aria-label="Görünümü sıfırla"
+              title="Görünümü sıfırla"
+            >
+              ⤢
+            </button>
+          </div>
+          <p class="drag-hint" id="drag-hint">
+            <span aria-hidden="true">↔</span> Sürükleyerek döndür
+            <span class="hint-dot">·</span> Yakından keşfet
+          </p>
+          <aside
+            id="detail-panel"
+            class="detail-panel"
+            hidden
+            aria-label="Ürün detayları"
+          >
+            <div class="detail-heading">
+              <p class="eyebrow">FORMUN ANATOMİSİ</p>
+              <button id="detail-close" aria-label="Detayları kapat">×</button>
+            </div>
+            <div id="part-list"></div>
+            <p class="sample-note">
+              Malzeme açıklamaları tasarım demosudur. Kesin ürün bilgisi
+              değildir.
+            </p>
+          </aside>
+          <div class="studio-bottom">
+            <div class="product-selector" role="group" aria-label="Ürün seçimi">
+              <button data-product="bra" aria-pressed="true">
+                01 <span>Form Sütyen</span></button
+              ><button data-product="panty" aria-pressed="false">
+                02 <span>Dantel Külot</span>
+              </button>
+            </div>
+            <div class="color-control">
+              <div class="color-label">
+                RENK <span id="color-name" aria-live="polite">Bordo</span>
+              </div>
+              <div
+                class="swatches"
+                id="swatches"
+                role="group"
+                aria-label="Ürün rengi"
+              ></div>
+            </div>
+          </div>
+          <div class="mood-switch" role="group" aria-label="Stüdyo ışığı">
+            <button data-mood="day" aria-pressed="true">Gün ışığı</button
+            ><button data-mood="evening" aria-pressed="false">Akşam</button>
+          </div>
+        </div>
+      </section>
+      <div class="manifesto-strip">
+        <span>GÖRÜNDÜĞÜNDEN DAHA FAZLASI.</span>
+        <p><i>01</i> Formu keşfet</p>
+        <span class="strip-star" aria-hidden="true">✳</span>
+        <p><i>02</i> Rengini bul</p>
+        <span class="strip-star" aria-hidden="true">✳</span>
+        <p><i>03</i> Detaya yaklaş</p>
+      </div>
+      <section
+        class="collection section-pad"
+        id="koleksiyon"
+        aria-labelledby="collection-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">AZ PARÇA. ÇOK HİS.</p>
+            <h2 id="collection-title">Günün en <em>kişisel</em> seçimi.</h2>
+          </div>
+          <p>Birbirini tamamlayan formlar.<br />Her açıdan sana yakın.</p>
+        </div>
+        <div class="collection-grid">
+          <article class="product-card">
+            <button
+              class="product-image"
+              data-open-product="bra"
+              aria-label="Form Sütyen modelini 3D stüdyoda aç"
+            >
+              <img
+                src="assets/sutyen-foto.jpg"
+                alt="Doğal ışıkta, ipte asılı kırmızı Ebru sütyen"
+                loading="lazy"
+                width="645"
+                height="722"
+              /><span class="image-tag">FORM / 01</span
+              ><span class="round-arrow" aria-hidden="true">↗</span>
+            </button>
+            <div class="card-caption">
+              <div>
+                <h3>Form Sütyen</h3>
+                <p>Akıcı çizgiler. Kendine özgü bir silüet.</p>
+              </div>
+              <button class="text-button" data-open-product="bra">
+                3D keşfet ↗
+              </button>
+            </div>
+          </article>
+          <article class="product-card">
+            <button
+              class="product-image"
+              data-open-product="panty"
+              aria-label="Dantel Külot modelini 3D stüdyoda aç"
+            >
+              <img
+                src="assets/kulot-foto.jpg"
+                alt="Ebru dantel külotun stüdyo fotoğrafı"
+                loading="lazy"
+                width="645"
+                height="722"
+              /><span class="image-tag">DANTEL / 02</span
+              ><span class="round-arrow" aria-hidden="true">↗</span>
+            </button>
+            <div class="card-caption">
+              <div>
+                <h3>Dantel Külot</h3>
+                <p>Küçük detaylar. Bütün bir his.</p>
+              </div>
+              <button class="text-button" data-open-product="panty">
+                3D keşfet ↗
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="story" id="hikaye" aria-labelledby="story-title">
+        <div class="marble-art" aria-hidden="true">
+          <div class="marble-lines"></div>
+          <span class="art-caption">AKIŞIN İÇİNDE, KENDİN GİBİ.</span
+          ><span class="art-word">e.</span
+          ><span class="art-number">EST. IN FEELING / EBRU</span>
+        </div>
+        <div class="story-copy">
+          <p class="eyebrow">EBRU’NUN DÜNYASI</p>
+          <h2 id="story-title">
+            Hiçbir desen<br />bir diğerinin<br /><em>aynısı değil.</em>
+          </h2>
+          <p>
+            Suya bırakılan rengin kendi yolunu bulması gibi. Ebru, adını her
+            defasında yeniden doğan o eşsiz desenlerden alıyor.
+          </p>
+          <p>
+            Bizim için iç giyim de böyle bir ifade alanı: kişisel, özgür ve sana
+            ait. Form ile dokunun buluştuğu yerde, kendi rengini bulman için.
+          </p>
+          <a class="underlined-link" href="#studyo"
+            >Kendi açından bak <span>↗</span></a
+          >
+        </div>
+      </section>
+      <section
+        class="details section-pad"
+        id="detaylar"
+        aria-labelledby="details-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">YAKINDAN BAKMAYA DEĞER</p>
+            <h2 id="details-title">Fark, <em>detayda.</em></h2>
+          </div>
+          <button class="underlined-link" id="explore-details">
+            Model üzerinde incele <span>↗</span>
+          </button>
+        </div>
+        <div class="detail-grid">
+          <article>
+            <span>01 / FORM</span>
+            <h3>Çizgilerin uyumu.</h3>
+            <p>
+              Kap formundan yan kanatlara uzanan silüeti, modeli dilediğin açıya
+              çevirerek incele.
+            </p>
+          </article>
+          <article>
+            <span>02 / DOKU</span>
+            <h3>Yaklaş, fark et.</h3>
+            <p>
+              Dantel desenlerini ve kumaş yüzeyini yakınlaştır. Bir fotoğrafın
+              ötesindeki detayları gör.
+            </p>
+          </article>
+          <article>
+            <span>03 / RENK</span>
+            <h3>Senin tonun.</h3>
+            <p>
+              Bordodan pudraya, renklerin formu nasıl değiştirdiğini aynı model
+              üzerinde deneyimle.
+            </p>
+          </article>
+        </div>
+      </section>
+      <section class="closing">
+        <p class="eyebrow">EN GÜZEL HİS, KENDİN OLMAK.</p>
+        <p>İçinden geldiği <em>gibi.</em></p>
+        <a href="#studyo" class="primary-link"
+          >Ebru’yu keşfet <span>↗</span></a
+        >
+      </section>
+    </main>
+    <footer>
+      <a href="#" class="wordmark" aria-label="Sayfa başına dön"
+        >ebru<span>®</span></a
+      >
+      <p>Tenine yakın. Kendine ait.</p>
+      <span
+        >© <span id="year">2026</span> Ebru · Dijital koleksiyon konsepti</span
+      ><a href="#studyo">Yukarı dön ↑</a>
+    </footer>
+    <noscript
+      ><div class="noscript">
+        3D stüdyo için JavaScript’i etkinleştirin. Ürün fotoğrafları koleksiyon
+        bölümünde görüntülenebilir.
+      </div></noscript
+    >
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "ebru-3d",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Ebru interactive 3D lingerie collection",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs",
+    "check": "node scripts/check.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
