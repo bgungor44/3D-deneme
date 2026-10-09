@@ -10,7 +10,7 @@ async function exists(file) {
   count++;
 }
 for (const [key, filename] of Object.entries({
-  bra: "sutyen.glb",
+  bra: "ebru-anatomy.glb",
   panty: "panty.glb",
 })) {
   const binary = await readFile(new URL(`models/${filename}`, root));
@@ -34,6 +34,37 @@ for (const [key, filename] of Object.entries({
     assert(!buffer.uri, `${filename}: external buffer dependency`);
   for (const image of gltf.images || [])
     assert(!image.uri, `${filename}: external image dependency`);
+  if (key === "bra") {
+    const groups = gltf.nodes.filter((n) => n.name?.startsWith("part_"));
+    assert.equal(
+      groups.length,
+      10,
+      "Bra must contain ten independently transformable groups",
+    );
+    for (const part of PRODUCTS.bra.parts) {
+      const matches = groups.filter((n) => n.extras?.partId === part.id);
+      assert(matches.length, `Missing geometry group: ${part.id}`);
+      for (const group of matches) {
+        assert(
+          group.children?.some((i) => gltf.nodes[i].mesh !== undefined),
+          `Empty part: ${group.name}`,
+        );
+        assert(
+          group.extras.explode.length === 3 &&
+            group.extras.explode.every(Number.isFinite),
+          `Invalid separation: ${group.name}`,
+        );
+      }
+    }
+    const names = gltf.materials.map((m) => m.name);
+    for (const name of ["fabric", "lining", "trim", "thread", "metal"])
+      assert(names.includes(name), `Missing material: ${name}`);
+    assert(
+      gltf.materials.find((m) => m.name === "fabric").normalTexture,
+      "Textile normal map must be embedded",
+    );
+    count += 14;
+  }
   count += 4 + PRODUCTS[key].parts.length;
 }
 const html = await readFile(new URL("index.html", root), "utf8");
@@ -42,6 +73,8 @@ for (const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
 }
 for (const file of [
   "css/fonts.css",
+  "blender/textile-colour.png",
+  "blender/elastic-colour.png",
   "vendor/three/addons/libs/draco/gltf/draco_decoder.wasm",
   "vendor/three/addons/libs/draco/gltf/draco_wasm_wrapper.js",
   "vendor/three/LICENSE",
