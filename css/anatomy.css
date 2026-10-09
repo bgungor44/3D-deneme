@@ -1,0 +1,304 @@
+/* Independent additions: the existing marble artwork remains untouched. */
+body .wordmark {
+  display: block;
+  width: 120px;
+  flex-shrink: 0;
+}
+body .wordmark img {
+  width: 100%;
+  height: auto;
+}
+.entrance {
+  min-height: 100svh;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 70px 24px;
+  background:
+    radial-gradient(ellipse at 25% 25%, #e5e9db 0, transparent 50%),
+    radial-gradient(ellipse at 85% 80%, #e7d4d5, transparent 55%), #f5f1e9;
+}
+.entrance-orbit {
+  position: absolute;
+  width: min(78vw, 820px);
+  aspect-ratio: 1;
+  border: 1px solid #94757b33;
+  border-radius: 50%;
+  z-index: -1;
+}
+.entrance-orbit:after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border: 1px solid #94757b24;
+  border-radius: 50%;
+}
+.entrance .entrance-kicker {
+  font-size: 9px;
+  letter-spacing: 3px;
+  margin: 0 0 35px;
+}
+.entrance-logo {
+  position: relative;
+  width: min(560px, 75vw);
+  aspect-ratio: 1690/830;
+  margin: 0 0 20px;
+}
+.logo-piece {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  will-change: transform, opacity;
+}
+.piece-e {
+  clip-path: inset(0 61.7% 0 0);
+  --dx: -110vw;
+  --dy: -28vh;
+  --rz: -28deg;
+  --delay: 0s;
+}
+.piece-b {
+  clip-path: inset(0 43.8% 0 38.3%);
+  --dx: 20vw;
+  --dy: -110vh;
+  --rz: 20deg;
+  --delay: 0.12s;
+}
+.piece-r {
+  clip-path: inset(0 21.9% 0 56.2%);
+  --dx: -20vw;
+  --dy: 110vh;
+  --rz: -18deg;
+  --delay: 0.24s;
+}
+.piece-u {
+  clip-path: inset(0 0 0 78.1%);
+  --dx: 110vw;
+  --dy: 25vh;
+  --rz: 25deg;
+  --delay: 0.36s;
+}
+.entrance.animating .logo-piece {
+  animation: letter-arrive 1.65s cubic-bezier(0.16, 1, 0.3, 1) var(--delay) both;
+}
+@keyframes letter-arrive {
+  0% {
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rz));
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0, 0) rotate(0);
+    opacity: 1;
+  }
+}
+.entrance-line {
+  font-family: var(--serif);
+  font-size: clamp(24px, 3vw, 38px);
+  color: var(--ink);
+  margin: 0 0 35px;
+}
+.entrance-line em {
+  color: var(--wine);
+}
+.entrance-skip {
+  font-size: 11px;
+  margin-top: 22px;
+  padding: 10px;
+}
+.entrance-scroll {
+  font-size: 9px;
+  letter-spacing: 2px;
+  padding: 12px;
+}
+.entrance-scroll span {
+  display: block;
+  font-size: 28px;
+  margin-top: 12px;
+}
+.entrance-edition {
+  position: absolute;
+  bottom: 25px;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+.entrance.entered .entrance-orbit {
+  transform: scale(1.12);
+  transition: transform 2s;
+}
+body .hero:has(.has-anatomy) {
+  min-height: 810px;
+}
+body .has-anatomy .stage {
+  top: 52px;
+  bottom: 277px;
+}
+body .has-anatomy .drag-hint {
+  bottom: 277px;
+}
+body .has-anatomy .studio-bottom {
+  bottom: 172px;
+}
+body .has-anatomy .mood-switch {
+  bottom: 144px;
+}
+body .has-anatomy .view-tools {
+  top: 29%;
+}
+.anatomy {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #f6f1e8e8;
+  border-top: 1px solid #baaa9855;
+  padding: 15px 24px 12px;
+  z-index: 5;
+  color: #342b2b;
+}
+.anatomy-modes {
+  display: flex;
+  gap: 6px;
+}
+.anatomy-modes button {
+  font-size: 11px;
+  padding: 10px 15px;
+  border: 1px solid #d2c2b8;
+  border-radius: 2px;
+  min-height: 38px;
+}
+.anatomy-modes button[aria-pressed="true"] {
+  background: #663647;
+  color: #fff8f0;
+  border-color: #663647;
+}
+.anatomy-options {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.anatomy-options label {
+  font-size: 8px;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.anatomy-options select {
+  font: 11px var(--sans);
+  max-width: 145px;
+  padding: 6px;
+  border: 1px solid #d2c2b8;
+  background: #faf7f1;
+  color: #342b2b;
+  border-radius: 2px;
+}
+#separation {
+  accent-color: #663647;
+  width: 85px;
+}
+#assembly-status {
+  font-size: 9px;
+  margin: 9px 0 0;
+  color: #746b64;
+  line-height: 1.5;
+  min-height: 14px;
+}
+.part-isolate {
+  font-size: 10px;
+  border-bottom: 1px solid #663647;
+  padding: 8px 0;
+  margin: 0 0 15px 33px;
+}
+body .has-anatomy .detail-panel {
+  bottom: 150px;
+  max-height: calc(100% - 205px);
+}
+@media (max-width: 1050px) {
+  .anatomy {
+    padding: 12px 16px;
+  }
+  .anatomy-options {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .anatomy-modes button {
+    padding: 9px 11px;
+    font-size: 10px;
+  }
+}
+@media (max-width: 760px) {
+  body .hero:has(.has-anatomy) {
+    min-height: 0;
+  }
+  body .studio.has-anatomy {
+    height: 760px;
+    min-height: 760px;
+  }
+  body .has-anatomy .stage {
+    top: 46px;
+    bottom: 315px;
+  }
+  body .has-anatomy .studio-bottom {
+    bottom: 220px;
+  }
+  body .has-anatomy .drag-hint {
+    bottom: 315px;
+  }
+  body .has-anatomy .mood-switch {
+    bottom: 190px;
+  }
+  .anatomy {
+    min-height: 170px;
+  }
+  .entrance-logo {
+    width: 88vw;
+  }
+  .entrance-line {
+    font-size: 28px;
+    max-width: 280px;
+  }
+  .entrance-orbit {
+    width: 110vw;
+  }
+  .entrance .entrance-kicker {
+    letter-spacing: 1.8px;
+    font-size: 8px;
+  }
+  body .wordmark {
+    width: 96px;
+  }
+  .anatomy-modes {
+    justify-content: space-between;
+  }
+  .anatomy-modes button {
+    flex: 1;
+    padding: 10px 8px;
+  }
+  .anatomy-options select {
+    max-width: 132px;
+  }
+  body .has-anatomy .detail-panel {
+    bottom: 185px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .entrance.animating .logo-piece {
+    animation: none;
+  }
+  .entrance.entered .entrance-orbit {
+    transition: none;
+  }
+}
