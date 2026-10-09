@@ -13,15 +13,15 @@ export const PRODUCTS = {
     parts: [
       {
         id: "cup",
-        title: "Kalıplı kap",
+        title: "Kap ve astar",
         detail:
-          "Modelin ana silüetini oluşturan kavisli yüzey. Işık değiştikçe yüzeyin formunu farklı açılardan inceleyebilirsin.",
+          "Dış kumaş, iç astar ve dikiş hatları. İki kabı tek başına göstererek ön ve iç yüzeylerini döndürüp incele.",
       },
       {
         id: "wire",
-        title: "Balen çizgisi",
+        title: "Balen ve kanal",
         detail:
-          "Kapların altını takip eden yay formu. Yakınlaştırarak kap ile alt bant arasındaki geçişi keşfet.",
+          "Kapların altını izleyen iki yay ve onları saran kumaş kanallar. Parçalarına ayır görünümünde kaplardan bağımsız hareket eder.",
       },
       {
         id: "bow",
@@ -51,7 +51,7 @@ export const PRODUCTS = {
         id: "hook",
         title: "Arka kopça",
         detail:
-          "Arka bölümdeki kapanış detayı. Bu parçayı seçtiğinde model arka görünümüne döner.",
+          "İki sıra kanca, üç kademeli gözler ve dikili kumaş kulakçıkları. Tek parça görünümü, kopçanın arka yüzüne yaklaştırır.",
       },
     ],
   },

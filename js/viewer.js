@@ -15,6 +15,8 @@ export class ProductStudio {
     this.visible = true;
     this.dirty = true;
     this.autoRotate = false;
+    this.assembly = this.targetAssembly = 0;
+    this.isolatedPart = null;
     this.yaw = this.targetYaw = -0.16;
     this.pitch = this.targetPitch = 0.02;
     this.magnification = this.targetMagnification = 1;
@@ -156,7 +158,28 @@ export class ProductStudio {
     this.hotspots.forEach(({ button }) => button.classList.remove("active"));
     this.invalidate();
   }
+  setAssembly(mode, part = "cup", amount = 1) {
+    this.isolatedPart = mode === "isolated" ? part : null;
+    this.targetAssembly = mode === "exploded" ? amount : 0;
+    if (this.isolatedPart) this.assembly = 0;
+    this.model?.setAssembly(this.assembly, this.isolatedPart);
+    this.targetMagnification = mode === "exploded" ? 0.73 : 1;
+    this.targetPitch = 0.04;
+    this.targetYaw = this.isolatedPart === "hook" ? Math.PI : -0.16;
+    this.autoRotate = false;
+    this.invalidate();
+  }
+  backView(back) {
+    this.targetYaw = back ? Math.PI : -0.16;
+    this.targetPitch = 0.04;
+    this.autoRotate = false;
+    this.invalidate();
+  }
   focusPart(id) {
+    if (this.isolatedPart) {
+      this.setAssembly("isolated", id);
+      return;
+    }
     const hotspot = this.hotspots.find((entry) => entry.id === id);
     this.hotspots.forEach(({ button, id: partId }) =>
       button.classList.toggle("active", partId === id),
@@ -298,6 +321,8 @@ export class ProductStudio {
     this.pitch += (this.targetPitch - this.pitch) * lerp;
     this.magnification +=
       (this.targetMagnification - this.magnification) * lerp;
+    this.assembly += (this.targetAssembly - this.assembly) * lerp;
+    this.model?.setAssembly(this.assembly, this.isolatedPart);
     this.pivot.rotation.set(this.pitch, this.yaw, -0.035);
     this.pivot.scale.setScalar(this.magnification);
     this.renderer.render(this.scene, this.camera);
@@ -306,6 +331,7 @@ export class ProductStudio {
     const moving =
       Math.abs(this.targetYaw - this.yaw) +
         Math.abs(this.targetPitch - this.pitch) +
+        Math.abs(this.targetAssembly - this.assembly) +
         Math.abs(this.targetMagnification - this.magnification) >
       0.0005;
     if (moving || this.autoRotate) this.invalidate();
@@ -315,7 +341,12 @@ export class ProductStudio {
     const vector = new THREE.Vector3();
     const raycaster = new THREE.Raycaster();
     const direction = new THREE.Vector3();
-    for (const { anchor, button } of this.hotspots) {
+    for (const { anchor, button, id } of this.hotspots) {
+      if (this.isolatedPart && id !== this.isolatedPart) {
+        button.classList.add("behind");
+        button.tabIndex = -1;
+        continue;
+      }
       anchor.getWorldPosition(vector);
       const distance = vector.distanceTo(this.camera.position);
       raycaster.set(
@@ -323,7 +354,15 @@ export class ProductStudio {
         direction.copy(vector).sub(this.camera.position).normalize(),
       );
       raycaster.far = distance;
-      const hit = raycaster.intersectObjects(this.model.meshes, false)[0];
+      const visibleMeshes = this.model.meshes.filter((mesh) => {
+        let node = mesh;
+        while (node) {
+          if (!node.visible) return false;
+          node = node.parent;
+        }
+        return true;
+      });
+      const hit = raycaster.intersectObjects(visibleMeshes, false)[0];
       vector.project(this.camera);
       const behind =
         vector.z > 1 ||

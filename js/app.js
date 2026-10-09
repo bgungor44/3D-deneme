@@ -1,4 +1,5 @@
 import { COLORS, PRODUCTS } from "./products.js";
+import "./entrance.js";
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -8,6 +9,61 @@ let selectedColor = COLORS[0];
 let studio;
 let loadVersion = 0;
 let viewerPromise;
+let assemblyMode = "whole";
+let inspectedPart = "cup";
+function applyAssembly() {
+  studio?.setAssembly(
+    assemblyMode,
+    inspectedPart,
+    Number($("#separation").value) / 100,
+  );
+  $$("[data-assembly]").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.assembly === assemblyMode)),
+  );
+  $("#separation-control").hidden = assemblyMode !== "exploded";
+  $("#back-view").setAttribute(
+    "aria-pressed",
+    String(assemblyMode === "isolated" && inspectedPart === "hook"),
+  );
+  $("#rotate").setAttribute("aria-pressed", "false");
+  $("#rotate").setAttribute("aria-label", "Otomatik döndürmeyi başlat");
+  const title = $("#part-select").selectedOptions[0]?.textContent;
+  $("#assembly-status").textContent =
+    assemblyMode === "isolated"
+      ? `${title} · Döndür, yakından incele.`
+      : assemblyMode === "exploded"
+        ? "Parçalar birbirinden ayrıldı. Ayrılma miktarını değiştirebilirsin."
+        : "Bir bütünün içindeki ince detaylar.";
+}
+PRODUCTS.bra.parts.forEach((part) => {
+  const option = document.createElement("option");
+  option.value = part.id;
+  option.textContent = part.title;
+  $("#part-select").append(option);
+});
+for (const [id, title] of [["cup_L", "Sol kap ve astar"], ["cup_R", "Sağ kap ve astar"], ["strap_L", "Sol askı ve toka"], ["strap_R", "Sağ askı ve toka"], ["wing_L", "Sol yan kanat"], ["wing_R", "Sağ yan kanat"]]) {
+  const option = document.createElement("option");
+  option.value = id;
+  option.textContent = title;
+  $("#part-select").append(option);
+}
+$$("[data-assembly]").forEach((button) =>
+  button.addEventListener("click", () => {
+    assemblyMode = button.dataset.assembly;
+    applyAssembly();
+  }),
+);
+$("#separation").addEventListener("input", applyAssembly);
+$("#part-select").addEventListener("change", () => {
+  inspectedPart = $("#part-select").value;
+  assemblyMode = "isolated";
+  applyAssembly();
+});
+$("#back-view").addEventListener("click", () => {
+  const back = $("#back-view").getAttribute("aria-pressed") !== "true";
+  $("#back-view").setAttribute("aria-pressed", String(back));
+  studio?.backView(back);
+});
 
 function setDetails(open) {
   $("#detail-panel").hidden = !open;
@@ -33,6 +89,19 @@ function renderParts() {
     const detail = document.createElement("p");
     detail.textContent = part.detail;
     item.append(summary, detail);
+    if (selectedProduct === "bra") {
+      const isolate = document.createElement("button");
+      isolate.className = "part-isolate";
+      isolate.textContent = "Yalnızca bu parçayı göster ↗";
+      isolate.addEventListener("click", () => {
+        inspectedPart = part.id;
+        $("#part-select").value = part.id;
+        assemblyMode = "isolated";
+        applyAssembly();
+        setDetails(false);
+      });
+      item.append(isolate);
+    }
     item.addEventListener("toggle", () => {
       if (!item.open) return;
       for (const other of list.children) if (other !== item) other.open = false;
@@ -95,6 +164,12 @@ async function selectProduct(key) {
   if (!(key in PRODUCTS)) return;
   const version = ++loadVersion;
   selectedProduct = key;
+  assemblyMode = "whole";
+  $("#anatomy").hidden = key !== "bra";
+  $(".studio").classList.toggle("has-anatomy", key === "bra");
+  $$("#anatomy button, #anatomy select, #anatomy input").forEach(
+    (el) => (el.disabled = true),
+  );
   $("#stage").dataset.state = "loading";
   $("#loading").hidden = false;
   $("#fallback").hidden = true;
@@ -114,6 +189,10 @@ async function selectProduct(key) {
     const model = await viewer.getModel(key);
     if (version !== loadVersion) return;
     viewer.showModel(model, key, selectedColor.hex);
+    applyAssembly();
+    $$("#anatomy button, #anatomy select, #anatomy input").forEach(
+      (el) => (el.disabled = !model.separable),
+    );
     $("#canvas-wrap").style.visibility = "visible";
     $$(".view-tools button").forEach((button) => {
       button.disabled = false;
@@ -165,6 +244,8 @@ $("#explore-details").addEventListener("click", () => {
 $("#zoom-in").addEventListener("click", () => studio?.zoom(1.2));
 $("#zoom-out").addEventListener("click", () => studio?.zoom(1 / 1.2));
 $("#reset").addEventListener("click", () => {
+  assemblyMode = "whole";
+  applyAssembly();
   studio?.reset();
   $("#rotate").setAttribute("aria-pressed", "false");
   $("#rotate").setAttribute("aria-label", "Otomatik döndürmeyi başlat");
