@@ -9,7 +9,7 @@
       content="Ebru — tenine yakın, kendine ait. İç giyim koleksiyonunu üç boyutlu keşfet; renkleri, formları ve en küçük detayları incele."
     />
     <title>Ebru — Tenine yakın. Kendine ait.</title>
-    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/ebru-logo.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="css/style.css" />
     <script type="importmap">
       {
@@ -43,13 +43,32 @@
       </defs>
     </svg>
     <a class="skip-link" href="#main">İçeriğe geç</a>
+    <section class="entrance" id="giris" aria-label="Ebru’ya hoş geldin">
+      <div class="entrance-orbit" aria-hidden="true"></div>
+      <p class="eyebrow entrance-kicker">BİR HİS. BİR FORM. BİR EBRU.</p>
+      <div class="entrance-logo" role="img" aria-label="Ebru">
+        <img class="logo-piece piece-e" src="assets/ebru-logo.svg" alt="" />
+        <img class="logo-piece piece-b" src="assets/ebru-logo.svg" alt="" />
+        <img class="logo-piece piece-r" src="assets/ebru-logo.svg" alt="" />
+        <img class="logo-piece piece-u" src="assets/ebru-logo.svg" alt="" />
+      </div>
+      <p class="entrance-line">Her parçada, <em>kendinden bir his.</em></p>
+      <button id="enter-site" class="primary-link">
+        Siteye gir <span>↗</span>
+      </button>
+      <a class="entrance-skip" href="#main">Doğrudan keşfet ↓</a>
+      <a class="entrance-scroll" href="#main" hidden
+        >HİKÂYENİ KEŞFET <span>↓</span></a
+      >
+      <span class="entrance-edition">FORM / 01 · DİJİTAL KOLEKSİYON</span>
+    </section>
     <div class="announcement">
       BİR HİS, BİR FORM, BİR EBRU. <span>İç giyime yeni bir bakış.</span>
     </div>
     <header class="header">
       <a class="wordmark" href="#" aria-label="Ebru ana sayfa"
-        >ebru<span>®</span></a
-      >
+        ><img src="assets/ebru-logo.svg" alt="Ebru" width="120" height="59"
+      /></a>
       <nav aria-label="Ana menü">
         <a href="#koleksiyon">Koleksiyon</a
         ><a href="#hikaye">Ebru’nun dünyası</a
@@ -179,6 +198,46 @@
                 aria-label="Ürün rengi"
               ></div>
             </div>
+          </div>
+          <div
+            class="anatomy"
+            id="anatomy"
+            aria-label="Sütyen parça incelemesi"
+          >
+            <div class="anatomy-modes" role="group" aria-label="Model düzeni">
+              <button data-assembly="whole" aria-pressed="true">Bütün</button>
+              <button data-assembly="exploded" aria-pressed="false">
+                Parçalarına ayır
+              </button>
+              <button data-assembly="isolated" aria-pressed="false">
+                Tek parça
+              </button>
+            </div>
+            <div class="anatomy-options">
+              <label id="separation-control" hidden
+                >AYRILMA
+                <input
+                  id="separation"
+                  type="range"
+                  min="0"
+                  max="100"
+                  value="100"
+                  aria-label="Parçaların ayrılma miktarı"
+              /></label>
+              <label class="part-select-label"
+                >PARÇA
+                <select
+                  id="part-select"
+                  aria-label="İncelenecek sütyen parçası"
+                ></select
+              ></label>
+              <button id="back-view" class="text-button" aria-pressed="false">
+                Arka görünüm ↶
+              </button>
+            </div>
+            <p id="assembly-status" role="status">
+              Bir bütünün içindeki ince detaylar.
+            </p>
           </div>
           <div class="mood-switch" role="group" aria-label="Stüdyo ışığı">
             <button data-mood="day" aria-pressed="true">Gün ışığı</button
@@ -335,8 +394,8 @@
     </main>
     <footer>
       <a href="#" class="wordmark" aria-label="Sayfa başına dön"
-        >ebru<span>®</span></a
-      >
+        ><img src="assets/ebru-logo.svg" alt="Ebru" width="120" height="59"
+      /></a>
       <p>Tenine yakın. Kendine ait.</p>
       <span
         >© <span id="year">2026</span> Ebru · Dijital koleksiyon konsepti</span
@@ -352,6 +411,7 @@
       // Native ES modules and GLB requests need HTTP. Keep file:// visits useful
       // even when the browser refuses to execute the module entry point.
       if (location.protocol === "file:") {
+        document.getElementById("giris").hidden = true;
         const loading = document.getElementById("loading");
         loading.style.flexDirection = "column";
         loading.style.padding = "24px";
@@ -360,7 +420,7 @@
           '<p style="max-width:260px;line-height:1.8;margin:0">3D stüdyo için dosya yerine çalışan yerel önizlemeyi aç.</p><a class="primary-link" href="http://127.0.0.1:4173">3D stüdyoyu aç <span>↗</span></a><p style="max-width:260px;font-size:10px;line-height:1.7">Önizleme kapalıysa proje klasöründe <code>node scripts/serve.mjs</code> komutuyla başlatabilirsin.</p>';
         document
           .querySelectorAll(
-            ".view-tools button, .product-selector button, .mood-switch button, #detail-toggle",
+            ".view-tools button, .product-selector button, .mood-switch button, #detail-toggle, #anatomy button, #anatomy input, #anatomy select",
           )
           .forEach((button) => {
             button.disabled = true;
